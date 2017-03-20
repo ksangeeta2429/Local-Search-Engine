@@ -1,0 +1,57 @@
+CC = gcc
+OFLAG = -o
+CFLAG = -c -g -Wall -DTRACE_FEATURE
+BIN = ../bin/
+SRC = ../src/
+OBJ = ../obj/
+INCLUDE = ../include/
+
+$(BIN)server: $(OBJ)server.o $(OBJ)server_errors.o $(OBJ)server_index_read.o $(OBJ)server_read_write.o $(OBJ)write_file_content.o $(OBJ)dir_search.o $(OBJ)linked_list.o $(OBJ)file_open.o $(OBJ)open_file_path.o
+	$(CC) $(OFLAG) server $(OBJ)server.o $(OBJ)server_errors.o $(OBJ)server_index_read.o $(OBJ)server_read_write.o $(OBJ)write_file_content.o $(OBJ)dir_search.o $(OBJ)linked_list.o $(OBJ)file_open.o $(OBJ)open_file_path.o
+	mv ./server $(BIN)
+
+$(OBJ)server.o: $(SRC)server.c $(INCLUDE)server_header.h
+	$(CC) $(CFLAG) $(SRC)server.c -I$(INCLUDE)
+	mv ./server.o $(OBJ)
+
+$(OBJ)server_errors.o: $(SRC)server_errors.c $(INCLUDE)server_header.h
+	$(CC) $(CFLAG) $(SRC)server_errors.c -I$(INCLUDE)
+	mv ./server_errors.o $(OBJ)
+
+$(OBJ)server_index_read.o: $(SRC)server_index_read.c $(INCLUDE)server_header.h
+	$(CC) $(CFLAG) $(SRC)server_index_read.c -I$(INCLUDE)
+	mv ./server_index_read.o $(OBJ)
+
+$(OBJ)server_read_write.o: $(SRC)server_read_write.c $(INCLUDE)server_header.h
+	$(CC) $(CFLAG) $(SRC)server_read_write.c -I$(INCLUDE)
+	mv ./server_read_write.o $(OBJ)
+
+$(OBJ)write_file_content.o: $(SRC)write_file_content.c $(INCLUDE)server_header.h
+	$(CC) $(CFLAG) $(SRC)write_file_content.c -I$(INCLUDE)
+	mv ./write_file_content.o $(OBJ)
+
+$(OBJ)dir_search.o: $(SRC)dir_search.c $(INCLUDE)server_header.h
+	$(CC) $(CFLAG) $(SRC)dir_search.c -I$(INCLUDE)
+	mv ./dir_search.o $(OBJ)
+
+$(OBJ)linked_list.o: $(SRC)linked_list.c $(INCLUDE)server_header.h
+	$(CC) $(CFLAG) $(SRC)linked_list.c -I$(INCLUDE)
+	mv ./linked_list.o $(OBJ)
+
+$(OBJ)file_open.o: $(SRC)file_open.c $(INCLUDE)server_header.h
+	$(CC) $(CFLAG) $(SRC)file_open.c -I$(INCLUDE)
+	mv ./file_open.o $(OBJ)
+
+$(OBJ)open_file_path.o: $(SRC)open_file_path.c $(INCLUDE)server_header.h
+	$(CC) $(CFLAG) $(SRC)open_file_path.c -I$(INCLUDE)
+	mv ./open_file_path.o $(OBJ)
+
+RUN: $(BIN)server
+	$(BIN)server
+
+VALGRIND: $(BIN)server
+	valgrind --tool=memcheck --leak-check=yes --show-reachable=yes $(BIN)server
+
+CLEAN:
+	rm $(OBJ)server.o $(OBJ)server_errors.o $(OBJ)server_index_read.o $(OBJ)server_read_write.o $(OBJ)write_file_content.o $(OBJ)dir_search.o $(OBJ)linked_list.o $(OBJ)file_open.o $(OBJ)open_file_path.o
+	rm $(BIN)server

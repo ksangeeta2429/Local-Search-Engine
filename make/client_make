@@ -1,0 +1,51 @@
+CC = gcc
+OFLAG = -o
+CFLAG = -c -Wall -DTRACE_FEATURE
+BIN = ../bin/
+SRC = ../src/
+OBJ = ../obj/
+INCLUDE = ../include/
+IP = 10.203.161.8
+PORT = 36600
+
+$(BIN)client: $(OBJ)client.o $(OBJ)client_display_path.o $(OBJ)client_errors.o $(OBJ)client_index_write.o $(OBJ)client_read_write.o $(OBJ)read_file_content.o $(OBJ)write_path.o
+	$(CC) $(OFLAG) client $(OBJ)client.o $(OBJ)client_display_path.o $(OBJ)client_errors.o $(OBJ)client_index_write.o $(OBJ)client_read_write.o $(OBJ)read_file_content.o $(OBJ)write_path.o
+	mv ./client $(BIN)
+
+$(OBJ)client.o: $(SRC)client.c $(INCLUDE)client_header.h
+	$(CC) $(CFLAG) $(SRC)client.c -I$(INCLUDE)
+	mv ./client.o $(OBJ)
+
+$(OBJ)client_display_path.o: $(SRC)client_display_path.c $(INCLUDE)client_header.h
+	$(CC) $(CFLAG) $(SRC)client_display_path.c -I$(INCLUDE)
+	mv ./client_display_path.o $(OBJ)
+
+$(OBJ)client_errors.o: $(SRC)client_errors.c $(INCLUDE)client_header.h
+	$(CC) $(CFLAG) $(SRC)client_errors.c -I$(INCLUDE)
+	mv ./client_errors.o $(OBJ)
+
+$(OBJ)client_index_write.o: $(SRC)client_index_write.c $(INCLUDE)client_header.h
+	$(CC) $(CFLAG) $(SRC)client_index_write.c -I$(INCLUDE)
+	mv ./client_index_write.o $(OBJ)
+
+$(OBJ)client_read_write.o: $(SRC)client_read_write.c $(INCLUDE)client_header.h
+	$(CC) $(CFLAG) $(SRC)client_read_write.c -I$(INCLUDE)
+	mv ./client_read_write.o $(OBJ)
+
+$(OBJ)read_file_content.o: $(SRC)read_file_content.c $(INCLUDE)client_header.h
+	$(CC) $(CFLAG) $(SRC)read_file_content.c -I$(INCLUDE)
+	mv ./read_file_content.o $(OBJ)
+
+$(OBJ)write_path.o: $(SRC)write_path.c $(INCLUDE)client_header.h
+	$(CC) $(CFLAG) $(SRC)write_path.c -I$(INCLUDE)
+	mv ./write_path.o $(OBJ)
+
+RUN: $(BIN)client
+	$(BIN)client $(IP) $(PORT)
+
+VALGRIND: $(BIN)client
+	valgrind --tool=memcheck --leak-check=yes --show-reachable=yes $(BIN)client $(IP) $(PORT)
+
+CLEAN:
+	rm $(OBJ)client.o $(OBJ)client_display_path.o $(OBJ)client_errors.o $(OBJ)client_index_write.o $(OBJ)client_read_write.o $(OBJ)read_file_content.o $(OBJ)write_path.o
+	rm $(BIN)client
